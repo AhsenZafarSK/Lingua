@@ -1,15 +1,21 @@
 CC = gcc
-CFLAGS = -Wall -std=c99 -pedantic -g
+CPPFLAGS = -I.
+CFLAGS = -Wall -Wextra -std=c99 -pedantic -g
 
-.PHONY: all clean
+.PHONY : all clean
 
-all: ex
+clean :
+	rm -f parser mpc.o ex.o
 
-clean:
-	rm -f ex ex.o
+#compile object files
 
-ex: ex.o
-	$(CC) ex.o -o ex -lm -lmpc
+ex.o : ex.c mpc.h
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) ex.c -o ex.o
 
-ex.o: ex.c
-	$(CC) $(CFLAGS) -c ex.c
+mpc.o : mpc.c mpc.h
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) mpc.c -o mpc.o
+
+#linking
+
+parser: mpc.o ex.o
+	$(CC) $(CFLAGS) mpc.o ex.o -o parser
